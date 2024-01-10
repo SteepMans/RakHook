@@ -18,38 +18,44 @@ void game_loop(game_loop_t orig) {
     StringCompressor::AddReference();
 
     // print incoming/outgoing packets/rpc
-    rakhook::on_send_rpc +=
-        [](int &id, RakNet::BitStream *bs, PacketPriority &priority, PacketReliability &reliability, char &ord_channel, bool &sh_timestamp) -> bool {
-        std::cout << "send rpc: " << id << ' ' << bs << ' ' << priority << ' ' << reliability << ' ' << +ord_channel << ' ' << std::boolalpha << sh_timestamp
-                  << std::noboolalpha << '\n';
-        return true;
-    };
+    //rakhook::on_send_rpc +=
+    //    [](int &id, RakNet::BitStream *bs, PacketPriority &priority, PacketReliability &reliability, char &ord_channel, bool &sh_timestamp) -> bool {
+    //    std::cout << "send rpc: " << id << ' ' << bs << ' ' << priority << ' ' << reliability << ' ' << +ord_channel << ' ' << std::boolalpha << sh_timestamp
+    //              << std::noboolalpha << '\n';
+    //    return true;
+    //};
 
-    rakhook::on_receive_packet += [](Packet *p) -> bool {
-        std::cout << "receive packet: " << +(*p->data) << ' ' << static_cast<void *>(p->data) << '\n';
-        return true;
-    };
+    //rakhook::on_receive_packet += [](Packet *p) -> bool {
+    //    std::cout << "receive packet: " << +(*p->data) << ' ' << static_cast<void *>(p->data) << '\n';
+    //    return true;
+    //};
 
-    rakhook::on_send_packet += [](RakNet::BitStream *bs, PacketPriority &priority, PacketReliability &reliability, char &ord_channel) -> bool {
-        std::cout << "send packet: " << +(*bs->GetData()) << ' ' << bs << ' ' << priority << ' ' << reliability << ' ' << +ord_channel << '\n';
-        return true;
-    };
+    //rakhook::on_send_packet += [](RakNet::BitStream *bs, PacketPriority &priority, PacketReliability &reliability, char &ord_channel) -> bool {
+    //    std::cout << "send packet: " << +(*bs->GetData()) << ' ' << bs << ' ' << priority << ' ' << reliability << ' ' << +ord_channel << '\n';
+    //    return true;
+    //};
 
-    rakhook::on_receive_rpc += [](unsigned char &id, RakNet::BitStream *bs) -> bool {
-        std::cout << "receive rpc: " << +id << ' ' << bs << '\n';
-        return true;
-    };
+    //rakhook::on_receive_rpc += [](unsigned char &id, RakNet::BitStream *bs) -> bool {
+    //    std::cout << "receive rpc: " << +id << ' ' << bs << '\n';
+    //    return true;
+    //};
 
     // modify some packets/rpc
-    rakhook::on_receive_rpc += on_show_dialog;
-    rakhook::on_receive_rpc += on_client_msg;
-    rakhook::on_receive_packet += nop_player_sync;
+    //rakhook::on_receive_rpc += on_show_dialog;
+    //rakhook::on_receive_rpc += on_client_msg;
+    //rakhook::on_receive_packet += nop_player_sync;
+    //rakhook::on_receive_rpc += on_attach_object_player;
+
+    rakhook::on_receive_rpc += on_scm_event_tuning;
+    rakhook::on_receive_rpc += on_stream_in_vehicle;
+    rakhook::on_receive_rpc += on_set_player_skin;
+    rakhook::on_receive_rpc += on_player_sync_skin;
 
     initialized = true;
 }
 
 LRESULT wndproc_hooked(wndproc_t orig, HWND hwnd, UINT Message, WPARAM wparam, LPARAM lparam) {
-    if (Message == WM_KEYUP) {
+   /* if (Message == WM_KEYUP) {
         if (wparam == VK_NUMPAD4) {
             change_name();
         }
@@ -57,7 +63,7 @@ LRESULT wndproc_hooked(wndproc_t orig, HWND hwnd, UINT Message, WPARAM wparam, L
         if (wparam == VK_NUMPAD5) {
             emul_player_sync();
         }
-    }
+    }*/
     return orig(hwnd, Message, wparam, lparam);
 }
 
